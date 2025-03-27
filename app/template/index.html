@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Processor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- App Bar -->
+        <header class="app-bar">
+            <h1>PDF Processor</h1>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Column -->
+            <div class="left-column">
+                <div class="upload-container" id="uploadContainer">
+                    <h2>Upload PDF</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="pdfFile" accept=".pdf" hidden>
+                        <div class="upload-prompt">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <p>Drag & drop your PDF here or <span class="browse-link">browse</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-container" id="previewContainer" style="display: none;">
+                    <h2>PDF Preview</h2>
+                    <div class="pdf-preview">
+                        <iframe id="pdfPreview" width="100%" height="400" title="PDF Preview"></iframe>
+                    </div>
+                    <div class="preview-actions">
+                        <div class="model-selection">
+                            <label for="modelSelect">Select Model:</label>
+                            <select id="modelSelect">
+                                <option value="openai">OpenAI</option>
+                                <option value="gemini">Gemini</option>
+                            </select>
+                        </div>
+                        <button class="process-btn" id="processBtn">Process</button>
+                        <button class="reupload-btn" id="reuploadBtn">Upload Another PDF</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column -->
+            <div class="right-column">
+                <div class="result-container">
+                    <h2>Results</h2>
+                    <div class="result-content" id="resultContent">
+                        <p class="placeholder-text">Results will appear here after processing.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>© 2023 PDF Processor App. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html> 

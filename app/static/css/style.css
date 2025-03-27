@@ -1,0 +1,228 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+/* App Bar */
+
+.app-bar {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Main Content */
+
+.main-content {
+    display: flex;
+    flex: 1;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.left-column,
+.right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Upload Container */
+
+.upload-container,
+.preview-container,
+.result-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: #3498db;
+    background-color: #f8f9fa;
+}
+
+.upload-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.upload-prompt svg {
+    color: #7f8c8d;
+}
+
+.browse-link {
+    color: #3498db;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+/* PDF Preview */
+
+.pdf-preview {
+    margin-bottom: 1rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.reupload-btn {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.reupload-btn:hover {
+    background-color: #dde4e6;
+}
+
+
+/* Preview Actions */
+
+.preview-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.model-selection {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.model-selection label {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.model-selection select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+
+/* Process Button (Now inside preview) */
+
+.process-btn {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.process-btn:hover:not(:disabled) {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.process-btn:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+
+/* Remove the center process container */
+
+.process-container {
+    display: none;
+}
+
+
+/* Result Container */
+
+.result-content {
+    min-height: 300px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.placeholder-text {
+    color: #95a5a6;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.result-text {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+
+/* Footer */
+
+.app-footer {
+    background-color: #34495e;
+    color: #ecf0f1;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+}
+
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+    .process-container {
+        margin: 1rem 0;
+    }
+}
