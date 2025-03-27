@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import os
 from werkzeug.utils import secure_filename
-from app.invproc import process_invoice_gemini, process_invoice_openai
+from app.invproc import process_invoice_gemini, process_invoice_openai, json_to_rich_text
 import pathlib
 import pymupdf
 from dotenv import load_dotenv
@@ -55,26 +55,38 @@ def process_pdf():
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], data['filename'])
     filepath = pathlib.Path(filepath)
     
+    if not filepath.exists():
+        return jsonify({'error': 'File not found'}), 404
+    
     # Get the selected model (default to gemini if not specified)
     model = data.get('model', 'gemini')
     
-    if model == 'openai':
-        # Load the document with PyMuPDF to get text
-        doc = pymupdf.open(filepath)
-        invoice_txt = ""
-        for page in doc:
-            invoice_txt += page.get_text()
-        # Process with OpenAI
-        result = process_invoice_openai(invoice_txt)
-    else:  # default to gemini
-        # Process with Gemini
-        result = process_invoice_gemini(filepath)
-    
-    print(result)
-    return jsonify({
-        'success': True,
-        'result': result
-    })
+    try:
+        if model == 'openai':
+            # Load the document with PyMuPDF to get text
+            doc = pymupdf.open(filepath)
+            invoice_txt = ""
+            for page in doc:
+                invoice_txt += page.get_text()
+            # Process with OpenAI
+            result = process_invoice_openai(invoice_txt)
+        else:  # default to gemini
+            # Process with Gemini
+            result = process_invoice_gemini(filepath)
+        
+        # Convert JSON result to rich text format
+        rich_text_result = json_to_rich_text(result)
+        
+        return jsonify({
+            'success': True,
+            'result': rich_text_result,
+            'raw_result': result  # Include raw result for debugging
+        })
+    except Exception as e:
+        print(f"Error processing file: {str(e)}")
+        return jsonify({
+            'error': f"Error processing file: {str(e)}"
+        }), 500
 
 if __name__ == '__main__':
     load_dotenv(override=True)

@@ -101,14 +101,15 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    resultContent.innerHTML = `<p class="result-text">${data.result}</p>`;
+                    // Set the HTML content directly (our response is already formatted HTML)
+                    resultContent.innerHTML = data.result;
                 } else {
-                    resultContent.innerHTML = `<p class="result-text error">Error: ${data.error}</p>`;
+                    resultContent.innerHTML = `<div class="error">Error: ${data.error}</div>`;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                resultContent.innerHTML = '<p class="result-text error">An error occurred during processing.</p>';
+                resultContent.innerHTML = '<div class="error">An error occurred during processing.</div>';
             })
             .finally(() => {
                 processBtn.disabled = false;

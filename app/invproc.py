@@ -1,13 +1,12 @@
-from typing import List
+from typing import List, Dict, Any
+from flask import json
 from pydantic import BaseModel
 from openai import OpenAI
 from google import genai
 from google.genai import types
 import pathlib
-import pymupdf
 import os
 from dotenv import load_dotenv, dotenv_values 
-import sys
 
 class InvoiceModel(BaseModel):
     company_name: str
@@ -17,6 +16,57 @@ class InvoiceModel(BaseModel):
     billing_end_date: str
     pricing_per_license: float
     total_amount: float
+
+def json_to_rich_text(data: Dict[str, Any]) -> str:
+    """Convert invoice JSON data to rich text format for display"""
+    try:
+        if isinstance(data, str):
+            try:
+                data = json.loads(data)
+            except:
+                return f"<div class='error'>Invalid JSON: {data}</div>"
+        
+        # Format SKUs as a bulleted list
+        sku_list = ""
+        if "sku" in data and isinstance(data["sku"], list):
+            sku_items = "".join([f"<li>{sku}</li>" for sku in data["sku"]])
+            sku_list = f"<ul>{sku_items}</ul>"
+        
+        # Create HTML table with invoice data
+        rich_text = f"""
+        <div class="invoice-result">
+            <h3>Invoice Details</h3>
+            <table class="invoice-table">
+                <tr>
+                    <th>Company Name</th>
+                    <td>{data.get('company_name', 'N/A')}</td>
+                </tr>
+                <tr>
+                    <th>Licenses</th>
+                    <td>{data.get('licenses', 'N/A')}</td>
+                </tr>
+                <tr>
+                    <th>SKU</th>
+                    <td>{sku_list if sku_list else data.get('sku', 'N/A')}</td>
+                </tr>
+                <tr>
+                    <th>Billing Period</th>
+                    <td>{data.get('billing_start_date', 'N/A')} to {data.get('billing_end_date', 'N/A')}</td>
+                </tr>
+                <tr>
+                    <th>Price per License</th>
+                    <td>₹{data.get('pricing_per_license', 'N/A')}</td>
+                </tr>
+                <tr>
+                    <th>Total Amount</th>
+                    <td>₹{data.get('total_amount', 'N/A')}</td>
+                </tr>
+            </table>
+        </div>
+        """
+        return rich_text
+    except Exception as e:
+        return f"<div class='error'>Error formatting invoice data: {str(e)}</div>"
 
 def process_invoice_openai(invoice_text: str):
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -75,3 +125,4 @@ def process_invoice_gemini(filepath: pathlib.Path):
         final_completion += chunk.text
 
     return final_completion
+
