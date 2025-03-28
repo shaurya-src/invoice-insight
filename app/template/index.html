@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice Insight</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
         <!-- App Bar -->
         <header class="app-bar">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Invoice Insight Logo" class="app-logo">
-                <h1>Invoice Insight</h1>
+            <div style="display: flex; align-items: center; gap: 1.2rem;">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='img/logo_light.png') }}" alt="Invoice Insight Logo" class="app-logo">
+                </div>
+                <h1 class="app-title">Invoice Insight</h1>
             </div>
         </header>
         
@@ -21,21 +24,21 @@
             <!-- Left Column -->
             <div class="left-column">
                 <div class="upload-container" id="uploadContainer">
-                    <h2>Upload PDF</h2>
+                    <h2>Upload Invoice</h2>
                     <div class="upload-area" id="uploadArea">
                         <input type="file" id="pdfFile" accept=".pdf" hidden>
                         <div class="upload-prompt">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                 <polyline points="17 8 12 3 7 8"></polyline>
                                 <line x1="12" y1="3" x2="12" y2="15"></line>
                             </svg>
-                            <p>Drag & drop your PDF here or <span class="browse-link">browse</span></p>
+                            <p class="upload-text">Drag & drop your PDF here or <span class="browse-link">browse</span></p>
                         </div>
                     </div>
                 </div>
                 
-                <div class="preview-container" id="previewContainer" style="display: none;">
+                <div class="preview-container neomorphic" id="previewContainer" style="display: none;">
                     <h2>PDF Preview</h2>
                     <div class="pdf-preview">
                         <iframe id="pdfPreview" width="100%" height="400" title="PDF Preview"></iframe>
@@ -43,12 +46,12 @@
                     <div class="preview-actions">
                         <div class="model-selection">
                             <label for="modelSelect">Select Model:</label>
-                            <select id="modelSelect">
-                                <option value="openai">OpenAI</option>
-                                <option value="gemini">Gemini</option>
+                            <select id="modelSelect" class="neomorphic-select">
+                                <option value="openai">OpenAI GPT-4o</option>
+                                <option value="gemini">Google Gemini</option>
                             </select>
                         </div>
-                        <button class="process-btn" id="processBtn">Process</button>
+                        <button class="process-btn" id="processBtn">Process Invoice</button>
                         <button class="reupload-btn" id="reuploadBtn">Upload Another PDF</button>
                     </div>
                 </div>
@@ -56,10 +59,10 @@
             
             <!-- Right Column -->
             <div class="right-column">
-                <div class="result-container">
-                    <h2>Results</h2>
+                <div class="result-container neomorphic">
+                    <h2>Analysis Results</h2>
                     <div class="result-content" id="resultContent">
-                        <p class="placeholder-text">Results will appear here after processing.</p>
+                        <p class="placeholder-text">Your invoice analysis results will appear here after processing.</p>
                     </div>
                 </div>
             </div>
@@ -67,7 +70,7 @@
         
         <!-- Footer -->
         <footer class="app-footer">
-            <p>© 2023 Invoice Insight App. All rights reserved.</p>
+            <p>© 2023 Invoice Insight | AI-Powered Invoice Processing</p>
         </footer>
     </div>
     
