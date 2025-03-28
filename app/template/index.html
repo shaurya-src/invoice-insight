@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Processor</title>
+    <title>Invoice Insight</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="app-container">
         <!-- App Bar -->
         <header class="app-bar">
-            <h1>PDF Processor</h1>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Invoice Insight Logo" class="app-logo">
+                <h1>Invoice Insight</h1>
+            </div>
         </header>
         
         <!-- Main Content -->
@@ -64,7 +67,7 @@
         
         <!-- Footer -->
         <footer class="app-footer">
-            <p>© 2023 PDF Processor App. All rights reserved.</p>
+            <p>© 2023 Invoice Insight App. All rights reserved.</p>
         </footer>
     </div>
     
