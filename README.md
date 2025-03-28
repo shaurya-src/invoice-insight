@@ -69,7 +69,7 @@ Invoice Insight addresses these challenges by automating the entire invoice proc
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/invoice-insight.git
+   git clone [https://github.com/yourusername/invoice-insight.git](https://github.com/shaurya-src/invoice-insight.git)
    cd invoice-insight
    ```
 
