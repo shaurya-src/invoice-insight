@@ -7,18 +7,53 @@ from google.genai import types
 import pathlib
 import os
 from dotenv import load_dotenv, dotenv_values 
+from enum import Enum
+
+AI_PROMPT = """You are an assistant that extracts structured invoice data. 
+Extract InvoiceModel from the input with the following fields:
+- is_invoice: If the type of the document provided is a valid invoice only then set this field as true, else mark it as false.
+- company_name: The official name of the company or organization responsible for payment as listed on the invoice.
+- product_name: Name of the product for which Invoice has been generated. Select approrpriate Name, else put it as Unsupported
+- licenses: Number of software licenses purchased
+- sku: List of Name of the Stock Keeping Units for the products. Select the appropriate SKU name, else mark it as Unsupported
+- billing_start_date: Start date of the billing period (format: DD-MM-YYYY)
+- billing_end_date: End date of the billing period (format: DD-MM-YYYY)
+- pricing_per_license: Cost per individual license in the invoice currency
+- total_amount: Total amount billed in the invoice currency"""
+
+class ProductName(str, Enum):
+    GOOGLE_WORKSPACE = "Google Workspace"
+    MICROSOFT_365 = "Microsoft 365"
+    UNSUPPORTED = "Unsupported"
+
+class SKU(str, Enum):
+    MS_BUSINESS_BASIC = "Microsoft 365 Business Basic"
+    MS_BUSINESS_STANDARD = "Microsoft 365 Business Standard"
+    MS_BUSINESS_PREMIUM = "Microsoft 365 Business Premium"
+    MS_APP_FOR_BUSINESS = "Microsoft 365 App for Business"
+    GWS_BUSINESS_STARTER = "Google Workspace Business Starter"
+    GWS_BUSINESS_STANDARD = "Google Workspace Business Standard"
+    GWS_BUSINESS_PLUS = "Google Workspace Business Plus"
+    GWS_ENTERPRISE = "Google Workspace Enterprise"
+    UNSUPPORTED = "Unsupported"
 
 class InvoiceModel(BaseModel):
     """Model representing structured data extracted from an invoice."""
     
+    is_invoice: bool = Field(
+        description="If the type of the document provided is a valid invoice only then set this field as true, else mark it as false."
+    )
     company_name: str = Field(
         description="The official name of the company or organization responsible for payment as listed on the invoice."
+    )
+    product_name: ProductName = Field(
+        description="Name of the product for which Invoice has been generated. Select approrpriate Name, else put it as Unsupported"
     )
     licenses: int = Field(
         description="Number of software licenses purchased"
     )
-    sku: List[str] = Field(
-        description="List of Name of the Stock Keeping Units for the products"
+    sku: List[SKU] = Field(
+        description="List of Name of the Stock Keeping Units for the products. Select the appropriate SKU name, else mark it as Unsupported"
     )
     billing_start_date: str = Field(
         description="Start date of the billing period (format: DD-MM-YYYY)"
@@ -54,8 +89,16 @@ def json_to_rich_text(data: Dict[str, Any]) -> str:
             <h3>Invoice Details</h3>
             <table class="invoice-table">
                 <tr>
+                    <th>Is Invoice</th>
+                    <td>{"Yes" if data.get('is_invoice', False) else "No"}</td>
+                </tr>
+                <tr>
                     <th>Company Name</th>
                     <td>{data.get('company_name', 'N/A')}</td>
+                </tr>
+                <tr>
+                    <th>Product Name</th>
+                    <td>{data.get('product_name', 'N/A')}</td>
                 </tr>
                 <tr>
                     <th>Licenses</th>
@@ -94,15 +137,7 @@ def process_invoice_openai(invoice_text: str):
     with client.beta.chat.completions.stream(
     model="gpt-4o",
     messages=[
-        {"role": "system", "content": """You are an assistant that extracts structured invoice data. 
-Extract InvoiceModel from the input text with the following fields:
-- company_name: The official name of the company or organization responsible for payment as listed on the invoice.
-- licenses: Number of software licenses purchased
-- sku: List of Name of the Stock Keeping Units for the products
-- billing_start_date: Start date of the billing period (format: DD-MM-YYYY)
-- billing_end_date: End date of the billing period (format: DD-MM-YYYY)
-- pricing_per_license: Cost per individual license in the invoice currency
-- total_amount: Total amount billed in the invoice currency"""},
+        {"role": "system", "content": AI_PROMPT},
         {"role": "user", "content": invoice_text},
     ],
     response_format=InvoiceModel,
@@ -137,14 +172,7 @@ def process_invoice_gemini(filepath: pathlib.Path):
         return "Error: Gemini API key not configured"
         
     client = genai.Client(api_key=api_key)
-    prompt = """Extract the following information from this invoice:
-- company_name: The official name of the company or organization responsible for payment as listed on the invoice.
-- licenses: Number of software licenses purchased
-- sku: List of Name of the Stock Keeping Units for the products
-- billing_start_date: Start date of the billing period (format: DD-MM-YYYY)
-- billing_end_date: End date of the billing period (format: DD-MM-YYYY)
-- pricing_per_license: Cost per individual license in the invoice currency
-- total_amount: Total amount billed in the invoice currency"""
+    prompt = AI_PROMPT
     response = client.models.generate_content_stream(
         model="gemini-2.0-flash",
         contents=[
